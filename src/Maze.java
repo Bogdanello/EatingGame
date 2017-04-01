@@ -50,7 +50,6 @@ public class Maze {
     }
 
     
-    
     // generate the maze
     private void generate(int x, int y) {
         visited[x][y] = true;
@@ -181,24 +180,30 @@ public class Maze {
     	while(!StdDraw.hasNextKeyTyped());
 		keyPressed = StdDraw.nextKeyTyped();
     	cleanPreviousPosition();
+    	int x, y;
+    	
     	
     	switch(keyPressed)
     	{
     	case 'W':
     	case 'w':
-    		player.moveUp();
+    		if(!north[player.getYCoordinate()][player.getXCoordinate()])
+    			player.moveUp();
     		break;
     	case 'S':
     	case 's':
-    		player.moveDown();
+    		if(!south[player.getYCoordinate()][player.getXCoordinate()])
+    			player.moveDown();
     		break;
     	case 'A':
     	case 'a':
-    		player.moveLeft();
+    		if(!west[player.getYCoordinate()][player.getXCoordinate()])
+    			player.moveLeft();
     		break;
     	case 'D':
     	case 'd':
-    		player.moveRight();
+    		if(!east[player.getYCoordinate()][player.getXCoordinate()])
+    			player.moveRight();
     		break;
     	default:
     		return;
@@ -226,7 +231,6 @@ public class Maze {
     	{
     		drawPlayer();
     		movePlayer();
-    		
     	}
     }
     
