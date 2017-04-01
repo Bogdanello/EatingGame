@@ -8,13 +8,17 @@ public class Maze {
     private boolean[][] west;
     private boolean[][] visited;
     private boolean done = false;
-
+    private Player player;
+    
+    private enum playerMoves{};
+    
     public Maze(int n) {
         this.n = n;
         StdDraw.setXscale(0, n+2);
         StdDraw.setYscale(0, n+2);
         init();
         generate();
+        player = new Player(1,1);
     }
 
     private void init() {
@@ -45,7 +49,8 @@ public class Maze {
         }
     }
 
-
+    
+    
     // generate the maze
     private void generate(int x, int y) {
         visited[x][y] = true;
@@ -84,17 +89,7 @@ public class Maze {
         }
     }
 
-    private void player(int x, int y)
-    {
-    	while(true)
-    	{
-	    	StdDraw.setPenColor(StdDraw.BLUE);
-	        StdDraw.filledCircle(x + 0.5, y + 0.5, 0.25);
-	        StdDraw.show();
-	        
-	        break;
-    	}
-    }
+    
     
     // generate the maze starting from lower left
     private void generate() {
@@ -117,8 +112,6 @@ public class Maze {
 */
      
     }
-
-
 
     // solve the maze using depth-first search
     private void solve(int x, int y) {
@@ -175,15 +168,78 @@ public class Maze {
         //StdDraw.pause(1000);
     }
 
-
-
+    public void setPlayerPosition(int x, int y)
+    {
+    	player.setXCoordinate(x);
+    	player.setYCoordinate(y);
+    }
+    
+    private void movePlayer()
+    {
+    	char keyPressed = ' '; 
+    	StdDraw.hasNextKeyTyped();
+    	while(!StdDraw.hasNextKeyTyped());
+		keyPressed = StdDraw.nextKeyTyped();
+    	cleanPreviousPosition();
+    	
+    	switch(keyPressed)
+    	{
+    	case 'W':
+    	case 'w':
+    		player.moveUp();
+    		break;
+    	case 'S':
+    	case 's':
+    		player.moveDown();
+    		break;
+    	case 'A':
+    	case 'a':
+    		player.moveLeft();
+    		break;
+    	case 'D':
+    	case 'd':
+    		player.moveRight();
+    		break;
+    	default:
+    		return;
+    	}
+    	
+    }
+    
+    private void cleanPreviousPosition()
+    {
+    	StdDraw.setPenColor(StdDraw.WHITE);
+    	StdDraw.filledCircle(player.getYCoordinate() + 0.5, player.getXCoordinate() + 0.5, 0.4);
+        StdDraw.show();
+    }
+    
+    private void drawPlayer()
+    {
+    	StdDraw.setPenColor(StdDraw.BLUE);
+        StdDraw.filledCircle(player.getYCoordinate() + 0.5, player.getXCoordinate() + 0.5, 0.3);
+        StdDraw.show();
+    }
+    
+    public void startGame()
+    {
+    	while(true)
+    	{
+    		drawPlayer();
+    		movePlayer();
+    		
+    	}
+    }
+    
     // a test client
     public static void main(String[] args) {
         int n = Integer.parseInt(args[0]);
         Maze maze = new Maze(n);
+        maze.setPlayerPosition(1, 1);
+        
         //StdDraw.enableDoubleBuffering();
         maze.draw();
-        maze.player(1,1);
+        maze.startGame();
+        
         //maze.solve();
     }
 
