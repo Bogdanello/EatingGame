@@ -8,20 +8,20 @@ import java.util.*;
 public class NewGame extends JFrame implements ActionListener{
     private JFrame frame;
     private JPanel buttonPane, fieldsPanel;
-    private JLabel botsNo, mazeSize;
-    private JTextField botsNoField, mazeSizeField;
+    private JLabel botsNoLabel, mazeSizeLabel, levelLabel;
+    private JTextField  mazeSizeField;
     private JButton start, cancel;
     private String mazeSizeData, botsNoData, lv;
-    private JComboBox levelList;
+    private JComboBox levelList, botsNoList;
     private String[] levels = {"Easy", "Medium", "Hard"};
-    
+    private String[] botsNo = {"1","2","3","4"};
     public NewGame() {
         frame = new JFrame("Game");
         buttonPane = new JPanel();
         fieldsPanel = new JPanel();
-        botsNo = new JLabel("Bots number");
-        mazeSize = new JLabel("Maze size");
-        botsNoField = new JTextField("");
+        botsNoLabel = new JLabel("Bots number");
+        mazeSizeLabel = new JLabel("Maze size");
+        levelLabel = new JLabel("Select level");
         mazeSizeField = new JTextField("");
         start = new JButton("Start");
         start.addActionListener(this);
@@ -30,15 +30,20 @@ public class NewGame extends JFrame implements ActionListener{
         levelList = new JComboBox(levels);
         levelList.setSelectedIndex(0);
         levelList.addActionListener(this);
-
+        
+        botsNoList = new JComboBox(botsNo);
+        botsNoList.setSelectedIndex(0);
+        botsNoList.addActionListener(this);
+        
         fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.PAGE_AXIS));
         buttonPane.setLayout(new FlowLayout());
 
-        fieldsPanel.add(botsNo);
-        fieldsPanel.add(botsNoField);
-        fieldsPanel.add(mazeSize);
-        fieldsPanel.add(mazeSizeField);
+        fieldsPanel.add(botsNoLabel);
+        fieldsPanel.add(botsNoList);
+        fieldsPanel.add(levelLabel);
         fieldsPanel.add(levelList);
+        fieldsPanel.add(mazeSizeLabel);
+        fieldsPanel.add(mazeSizeField);
         buttonPane.add(start);
         buttonPane.add(cancel);
         frame.add(fieldsPanel, BorderLayout.PAGE_START);
@@ -52,7 +57,8 @@ public class NewGame extends JFrame implements ActionListener{
     public synchronized void actionPerformed(ActionEvent e)
     {
         if (e.getSource() == start) {
-            botsNoData = botsNoField.getText(); //perform your operation
+           // botsNoData = .getText(); //perform your operation
+        	botsNoData = (String) botsNoList.getSelectedItem();
             mazeSizeData = mazeSizeField.getText();
             lv = (String) levelList.getSelectedItem();
 //            System.out.println(botsNoData);

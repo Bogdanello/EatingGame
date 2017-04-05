@@ -23,11 +23,7 @@ public class Maze {
         init();
         generate();
         player = new Player(1,1);
-        enemies = new ArrayList<Enemy>();
-        Enemy enemy1 = new Enemy(n/2,n/2);
-        Enemy enemy2 = new Enemy(n/3,n/3);
-        enemies.add(enemy1);
-        enemies.add(enemy2);
+        
         
     }
 
@@ -101,68 +97,17 @@ public class Maze {
     // generate the maze starting from lower left
     private void generate() {
         generate(1, 1);
-
-/*
-        // delete some random walls
-        for (int i = 0; i < n; i++) {
-            int x = 1 + StdRandom.uniform(n-1);
-            int y = 1 + StdRandom.uniform(n-1);
-            north[x][y] = south[x][y+1] = false;
-        }
-
-        // add some random walls
-        for (int i = 0; i < 10; i++) {
-            int x = n/2 + StdRandom.uniform(n/2);
-            int y = n/2 + StdRandom.uniform(n/2);
-            east[x][y] = west[x+1][y] = true;
-        }
-*/
      
     }
 
-    // solve the maze using depth-first search
-    private void solve(int x, int y) {
-        if (x == 0 || y == 0 || x == n+1 || y == n+1) return;
-        if (done || visited[x][y]) return;
-        visited[x][y] = true;
-
-        StdDraw.setPenColor(StdDraw.BLUE);
-        StdDraw.filledCircle(x + 0.5, y + 0.5, 0.25);
-        StdDraw.show();
-        //StdDraw.pause(30);
-
-        // reached middle
-        if (x == n/2 && y == n/2) done = true;
-
-        if (!north[x][y]) solve(x, y + 1);
-        if (!east[x][y])  solve(x + 1, y);
-        if (!south[x][y]) solve(x, y - 1);
-        if (!west[x][y])  solve(x - 1, y);
-
-        if (done) return;
-
-        StdDraw.setPenColor(StdDraw.GRAY);
-        StdDraw.filledCircle(x + 0.5, y + 0.5, 0.25);
-        StdDraw.show();
-        //StdDraw.pause(30);
-    }
-
-    // solve the maze starting from the start state
-    public void solve() {
-        for (int x = 1; x <= n; x++)
-            for (int y = 1; y <= n; y++)
-                visited[x][y] = false;
-        done = false;
-        solve(1, 1);
-    }
 
     // draw the maze
     public void draw() {
         StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.filledCircle(n/2.0 + 0.5, n/2.0 + 0.5, 0.375);
-        StdDraw.filledCircle(1.5, 1.5, 0.375);
-        StdDraw.filledCircle(2.5, 1.5, 0.375);
-
+       // StdDraw.filledCircle(n/2.0 + 0.5, n/2.0 + 0.5, 0.375);
+//        StdDraw.filledCircle(1.5, 1.5, 0.375);
+//        StdDraw.filledCircle(2.5, 1.5, 0.375);
+        
         StdDraw.setPenColor(StdDraw.BLACK);
         for (int x = 1; x <= n; x++) {
             for (int y = 1; y <= n; y++) {
@@ -230,6 +175,7 @@ public class Maze {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		cleanPreviousPosition(enemy);
 		while(!validMove)
 		{
@@ -292,7 +238,6 @@ public class Maze {
     	{
     		movePlayer();
     		drawEntity(player);
-    		//drawEntity(enemy);
     		for(Enemy enemy : enemies)
     		{
     			moveEnemy(enemy);
@@ -301,7 +246,45 @@ public class Maze {
     	}
     }
     
-=======
+    public void generateBots(int nrBots, int mazeSize)
+    {
+    	enemies = new ArrayList<Enemy>();
+    	Enemy enemy;
+    	for(int i=0; i < nrBots; i++)
+    	{
+    		enemy = new Enemy((int)(Math.random()*mazeSize), (int)(Math.random()*mazeSize));
+            enemies.add(enemy);
+    	}
+    }
+    
+    public void generateStars(int mazeSize)
+    {
+    	double x,y;
+    	
+    	x = (int)(Math.random()*mazeSize) + 0.5;
+    	y = (int)(Math.random()*mazeSize) + 0.5;
+    	
+    	for(int i=0; i < mazeSize * 2; i++)
+    	{
+    	
+    		x = (int)(Math.random()*mazeSize) + 0.5;
+        	y = (int)(Math.random()*mazeSize) + 0.5;
+        	
+    		while(x < 1 || x > mazeSize)
+    		{
+    			x = (int)(Math.random()*mazeSize) + 0.5;
+    		}
+    		
+    		while(y < 1 || y > mazeSize)
+    		{
+    			y = (int)(Math.random()*mazeSize) + 0.5;
+    		}
+    		
+    		StdDraw.picture(x, y, "star.png",0.8,0.8);	
+    	}
+    	
+    }
+    
     public static void main(String[] args) throws InterruptedException {
 		NewGame ng = new NewGame();
 		while (ng.getMazeSize() == null) {
@@ -311,18 +294,15 @@ public class Maze {
 			}
 		}
 		int n = Integer.parseInt(ng.getMazeSize());
-		//System.out.println(ng.getLevel());
-		//System.out.println(ng.getBotsNo());
-		// start game btn, nb of bots, maze size, dificulty lvl buttons/dropdown
+		System.out.println(ng.getBotsNo());
 
 		Maze maze = new Maze(n);
+		maze.generateStars(n);
+		maze.generateBots(Integer.parseInt(ng.getBotsNo()), n);
 		maze.setPlayerPosition(1, 1);
-
+		
 		// StdDraw.enableDoubleBuffering();
 		maze.draw();
 		maze.startGame();
-		// maze.solve();
 	}
->>>>>>> 08fa1f11aa85b83f4e27cbdfbef3bb0b652c1f86
-
 }
