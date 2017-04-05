@@ -1,4 +1,6 @@
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Maze {
     private int n;                 // dimension of maze
@@ -9,8 +11,10 @@ public class Maze {
     private boolean[][] visited;
     private boolean done = false;
     private Player player;
+    private List<Enemy> enemies;
     
-    private enum playerMoves{};
+    private enum Difficulty {Easy, Normal, Hard};
+    private enum Moves {Up, Down, Left, Right};
     
     public Maze(int n) {
         this.n = n;
@@ -19,6 +23,12 @@ public class Maze {
         init();
         generate();
         player = new Player(1,1);
+        enemies = new ArrayList<Enemy>();
+        Enemy enemy1 = new Enemy(n/2,n/2);
+        Enemy enemy2 = new Enemy(n/3,n/3);
+        enemies.add(enemy1);
+        enemies.add(enemy2);
+        
     }
 
     private void init() {
@@ -88,8 +98,6 @@ public class Maze {
         }
     }
 
-    
-    
     // generate the maze starting from lower left
     private void generate() {
         generate(1, 1);
@@ -179,9 +187,8 @@ public class Maze {
     	StdDraw.hasNextKeyTyped();
     	while(!StdDraw.hasNextKeyTyped());
 		keyPressed = StdDraw.nextKeyTyped();
-    	cleanPreviousPosition();
     	int x, y;
-    	
+    	cleanPreviousPosition(player);
     	
     	switch(keyPressed)
     	{
@@ -211,17 +218,70 @@ public class Maze {
     	
     }
     
-    private void cleanPreviousPosition()
+    private void moveEnemy(Enemy enemy) 
     {
-    	StdDraw.setPenColor(StdDraw.WHITE);
-    	StdDraw.filledCircle(player.getYCoordinate() + 0.5, player.getXCoordinate() + 0.5, 0.4);
-        StdDraw.show();
+    	int move;
+    	boolean validMove = false;
+    	
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		cleanPreviousPosition(enemy);
+		while(!validMove)
+		{
+			move = (int)(4*Math.random());
+			switch(move)
+			{
+			case 0:
+				if(!north[enemy.getYCoordinate()][enemy.getYCoordinate()])
+				{
+					enemy.moveUp();
+					validMove = true;
+				}
+				break;
+			case 1:
+				if(!south[enemy.getYCoordinate()][enemy.getXCoordinate()])
+				{
+					enemy.moveDown();
+					validMove = true;
+				}
+				break;
+			case 2:
+				if(!west[enemy.getYCoordinate()][enemy.getXCoordinate()])
+				{
+					enemy.moveLeft();
+					validMove = true;
+				}
+				break;
+			case 3:
+				if(!east[enemy.getYCoordinate()][enemy.getXCoordinate()])
+				{
+					enemy.moveRight();
+					validMove = true;
+				}
+				break;
+			default:
+	    		break;
+			}
+		}
+
     }
     
-    private void drawPlayer()
+    private void cleanPreviousPosition(Entity entity)
     {
-    	StdDraw.setPenColor(StdDraw.BLUE);
-        StdDraw.filledCircle(player.getYCoordinate() + 0.5, player.getXCoordinate() + 0.5, 0.3);
+    	StdDraw.setPenColor(StdDraw.WHITE);
+    	StdDraw.filledCircle(entity.getYCoordinate() + 0.5, entity.getXCoordinate() + 0.5, 0.4);
+        StdDraw.show();
+    }
+  
+    private void drawEntity(Entity entity)
+    {
+    	
+    	StdDraw.setPenColor(entity.color);
+        StdDraw.filledCircle(entity.getYCoordinate() + 0.5, entity.getXCoordinate() + 0.5, 0.3);
         StdDraw.show();
     }
     
@@ -229,8 +289,14 @@ public class Maze {
     {
     	while(true)
     	{
-    		drawPlayer();
     		movePlayer();
+    		drawEntity(player);
+    		//drawEntity(enemy);
+    		for(Enemy enemy : enemies)
+    		{
+    			moveEnemy(enemy);
+        		drawEntity(enemy);
+    		}
     	}
     }
     
@@ -239,7 +305,7 @@ public class Maze {
         int n = Integer.parseInt(args[0]);
         Maze maze = new Maze(n);
         maze.setPlayerPosition(1, 1);
-        
+       
         //StdDraw.enableDoubleBuffering();
         maze.draw();
         maze.startGame();
