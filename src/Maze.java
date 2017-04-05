@@ -154,6 +154,7 @@ public class Maze {
         StdDraw.setPenColor(StdDraw.RED);
         StdDraw.filledCircle(n/2.0 + 0.5, n/2.0 + 0.5, 0.375);
         StdDraw.filledCircle(1.5, 1.5, 0.375);
+        StdDraw.filledCircle(2.5, 1.5, 0.375);
 
         StdDraw.setPenColor(StdDraw.BLACK);
         for (int x = 1; x <= n; x++) {
@@ -230,17 +231,26 @@ public class Maze {
     	}
     }
     
-    // a test client
-    public static void main(String[] args) {
-        int n = Integer.parseInt(args[0]);
-        Maze maze = new Maze(n);
-        maze.setPlayerPosition(1, 1);
-        
-        //StdDraw.enableDoubleBuffering();
-        maze.draw();
-        maze.startGame();
-        
-        //maze.solve();
-    }
+    public static void main(String[] args) throws InterruptedException {
+		NewGame ng = new NewGame();
+		while (ng.getMazeSize() == null) {
+			try {
+				Thread.sleep(2000);
+			} catch (Exception e) {
+			}
+		}
+		int n = Integer.parseInt(ng.getMazeSize());
+		//System.out.println(ng.getLevel());
+		//System.out.println(ng.getBotsNo());
+		// start game btn, nb of bots, maze size, dificulty lvl buttons/dropdown
+
+		Maze maze = new Maze(n);
+		maze.setPlayerPosition(1, 1);
+
+		// StdDraw.enableDoubleBuffering();
+		maze.draw();
+		maze.startGame();
+		// maze.solve();
+	}
 
 }
